@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{% include 'includes/_messages.html' %}
+
+	<div class="container emp-profile">
+            <form method="post">
+                <div class="row">
+                    <!-- <div class="col-md-4">
+                        <div class="profile-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                            <div class="file btn btn-lg btn-primary">
+                                Change Photo
+                                <input type="file" name="file"/>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5 style="font-size: 30px" >
+                                        {{session["name"]}}
+                                    </h5>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Change Password</a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <form method="POST" action="">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Enter Old Password:</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                               <input type="password" name="password" class="form-control input_pass" placeholder="old password" autofocus="autofocus" value={{request.form.password}}>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Enter New Password:</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="password" name="newpassword" class="form-control input_pass" placeholder="new password" autofocus="autofocus" value={{request.form.newpassword}}>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Retype New Password:</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="password" name="newconfirm" class="form-control input_pass" placeholder="confirm new password" autofocus="autofocus" value={{request.form.newconfirm}}>
+                                           </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="submit" class="btn" value="Change Password">
+                                            </div>
+                                        </div>
+                                        <br>
+                                        </form>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </form>           
+        </div>
+
+{% endblock %}
