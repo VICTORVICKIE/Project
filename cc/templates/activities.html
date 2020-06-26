@@ -26,6 +26,7 @@
         </tfoot>
         <tbody>
           {% for block in blockchain %}
+          
             <tr>
             	{% if roll in block.data %}
   	              {% if roll == block.data.split("-->")[0] %}

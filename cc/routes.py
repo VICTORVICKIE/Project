@@ -9,7 +9,7 @@ from cc.forms import *
 import time, os
 from cc import app
 
-s = URLSafeTimedSerializer('Thisisasecret!')
+s = URLSafeTimedSerializer(os.urandom(24))
 
 
 
@@ -169,7 +169,7 @@ def activities():
 		balance = get_balance(session.get('roll'))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
-			page='activities')
+			page='activities',str=str)
 
 ########################################     TRANSACTION BLOCK  ##########################################
 
