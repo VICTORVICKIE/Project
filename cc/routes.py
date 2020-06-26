@@ -169,7 +169,7 @@ def activities():
 		balance = get_balance(session.get('roll'))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
-			page='activities',str=str)
+			page='activities')
 
 ########################################     TRANSACTION BLOCK  ##########################################
 
