@@ -41,7 +41,7 @@
                                                 <label>Enter Old Password:</label>
                                             </div>
                                             <div class="col-md-6">
-                                               <input type="password" name="password" class="form-control input_pass" placeholder="old password" autofocus="autofocus" value={{request.form.password}}>
+                                               <input type="password" id="old" name="password" class="form-control input_pass" placeholder="old password" autofocus="autofocus" value={{request.form.password}}>
                                             </div>
                                         </div>
                                         <br>
@@ -50,7 +50,7 @@
                                                 <label>Enter New Password:</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input type="password" name="newpassword" class="form-control input_pass" placeholder="new password" autofocus="autofocus" value={{request.form.newpassword}}>
+                                                <input type="password" id="new" name="newpassword" class="form-control input_pass" placeholder="new password" autofocus="autofocus" value={{request.form.newpassword}}>
                                             </div>
                                         </div>
                                         <br>
@@ -59,7 +59,15 @@
                                                 <label>Retype New Password:</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input type="password" name="newconfirm" class="form-control input_pass" placeholder="confirm new password" autofocus="autofocus" value={{request.form.newconfirm}}>
+                                                <input type="password" id="confirm" name="newconfirm" class="form-control input_pass" placeholder="confirm new password" autofocus="autofocus" value={{request.form.newconfirm}}>
+                                           </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input   type="checkbox" onclick="myFunction()">  Show Password
                                            </div>
                                         </div>
                                         <br>
@@ -80,5 +88,21 @@
                 </div>
             </form>           
         </div>
+        <script>
+                                    function myFunction() {
+                                      var x = document.getElementById("confirm");
+                                      var y = document.getElementById("old");
+                                      var z = document.getElementById("new");
+                                      if ((x.type === "password") && (y.type === "password")  && (y.type === "password")) {
+                                        x.type = "text";
+                                        y.type = "text";
+                                        z.type = "text";
+                                      } else {
+                                        x.type = "password";
+                                        y.type = "password";
+                                        z.type = "password";
+                                      }
+                                    }
+                                    </script>
 
 {% endblock %}

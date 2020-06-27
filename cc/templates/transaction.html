@@ -8,6 +8,7 @@
   <div class="from-group">
     {{render_field(form.roll, class_="form-control")}}
   </div>
+  <br>
   <div class="from-group">
     {{render_field(form.amount, class_="form-control")}}
   </div>
@@ -16,6 +17,23 @@
     {{render_field(form.password, class_="form-control")}}
   </div>
   <br>
+  <div class="from-group">
+    <input   type="checkbox" onclick="myFunction()">  Show Password
+  </div>
+  <br>
   <p><input type="submit" class="btn btn-primary" value="Send"></p>
 </form>
+<script>
+                                    function myFunction() {
+                                      var x = document.getElementById("pass");
+                                     
+                                      if (x.type === "password")  {
+                                        x.type = "text";
+                                        ;
+                                      } else {
+                                        x.type = "password";
+                                        
+                                      }
+                                    }
+                                    </script>
 {% endblock %}
