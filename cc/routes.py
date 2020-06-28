@@ -244,7 +244,7 @@ def verifytrans():
 @app.route("/buy",methods=["GET","POST"])
 @is_logged_in
 def buy():
-	form = SendCCForm(request.form)
+	form = BuyCCForm(request.form)
 	balance = get_balance(session.get('roll'))
 
 	if request.method == 'POST':

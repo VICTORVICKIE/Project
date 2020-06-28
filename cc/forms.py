@@ -12,6 +12,7 @@ class SendCCForm(Form):
 	roll = StringField('roll',[validators.Length(min=4,max=25)])
 	amount = StringField('Amount',[validators.Length(min=1,max=50)])
 	password = PasswordField('Password',[validators.DataRequired()],id="pass")
+
 class BuyCCForm(Form):
 	amount = StringField('Amount',[validators.Length(min=1,max=50)])
 
