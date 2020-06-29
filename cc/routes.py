@@ -193,6 +193,7 @@ def activities():
 	if "roll" in session:
 		blockchain = get_blockchain().chain
 		roll = session["roll"]
+		blockchain = blockchain[::-1]
 		balance = get_balance(session.get('roll'))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
