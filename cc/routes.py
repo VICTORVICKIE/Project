@@ -36,6 +36,7 @@ def is_logged_out(f):
 
 @app.route("/",defaults={'width':None,'height':None})
 @app.route("/<width>/<height>")
+@is_logged_out
 def index(width=None,height=None):
 	if not width or not height:
 		return """
@@ -57,31 +58,25 @@ def register():
 	users = Table("users","name","email","roll","password","confirm",primary_key='roll')
 
 	if request.method == 'POST' and form.validate():
-		if len(form.roll.data) < 15 :
-			if (form.password.data == form.confirm.data):
-
-				roll = form.roll.data
-				email = form.email.data
-				name = form.name.data
-				confirm = '0'
+		roll = form.roll.data
+		email = form.email.data
+		name = form.name.data
+		confirm = '0'
 				
-				if isnewuser(roll): 						
-					password = sha256_crypt.hash(form.password.data)
+		if isnewuser(roll): 						
+			password = sha256_crypt.hash(form.password.data)
 							
-					users.insert(name,email,roll,password,confirm)
+			users.insert(name,email,roll,password,confirm)
 					
-					confirm_link_sender(email,roll,func_to='confirm_email',
+			confirm_link_sender(email,roll,func_to='confirm_email',
 										salt='email-confirm',purpose='EmailVerify')
 							
-					return render_template('tq.html')
+			return render_template('tq.html')
 						
-				else:
-					flash('user already exists','danger')
-					return redirect(url_for('login'))
-			else:
-				flash("Password doesn't match",'danger')
 		else:
-			flash('Invalid Roll Number','danger')
+			flash('user already exists','danger')
+			return redirect(url_for('login'))
+			
 	return render_template('register.html',form=form)
 
 ########################################     EMAIL CONFIRMATION BLOCK  #################################
