@@ -6,15 +6,15 @@
 {% from "includes/_formhelpers.html" import render_field %}
 <form method="POST" action="">
   <div class="from-group">
-    {{render_field(form.roll, class_="form-control")}}
+    {{render_field(form.roll, class_="form-control",placeholder="Recipient's Roll/Staff Number")}}
   </div>
   <br>
   <div class="from-group">
-    {{render_field(form.amount, class_="form-control")}}
+    {{render_field(form.amount, class_="form-control",placeholder="Amount e.g(100)")}}
   </div>
   </br>
   <div class="from-group">
-    {{render_field(form.password, class_="form-control")}}
+    {{render_field(form.password, class_="form-control",placeholder="Your Password")}}
   </div>
   <br>
   <div class="from-group">

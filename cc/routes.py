@@ -57,7 +57,7 @@ def register():
 	users = Table("users","name","email","roll","password","confirm",primary_key='roll')
 
 	if request.method == 'POST' and form.validate():
-		if int(form.roll.data) :
+		if len(form.roll.data) < 15 :
 			if (form.password.data == form.confirm.data):
 
 				roll = form.roll.data
@@ -231,9 +231,9 @@ def verifytrans():
 		if request.method == 'POST':
 			ps = request.form['ps']
 			if str(ps) == str(otp):
+				send_campus_coins(session.get('roll'),recepient,amount)
 				session.pop('otp',None)
 				session.pop('recepient',None)
-				send_campus_coins(session.get('roll'),recepient,amount)
 				flash("Money Sent","success")
 				return redirect(url_for('transaction'))
 
