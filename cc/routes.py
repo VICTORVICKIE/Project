@@ -17,6 +17,7 @@ def is_logged_in(f):
 	@wraps(f)
 	def wrap(*args, **kwargs):
 		if 'logged_in' in session:
+			
 			return f(*args,**kwargs)
 		else:
 			flash("Unauthorized!! Please Login","danger")
@@ -32,6 +33,36 @@ def is_logged_out(f):
         else:
             return f(*args, **kwargs)
     return wrap
+
+def special_trans(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if ('recepient' in session) and ('otp' in session) and ('amount' in session):
+        	
+        	return f(*args, **kwargs)
+            
+        else:
+        	flash("Not the Llama you are looking for.","danger")
+        	return redirect(url_for('transaction'))
+            
+    return wrap
+
+def special_chps(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'newpass' in session and 'otp' in session:
+        	
+        	return f(*args, **kwargs)
+            
+        else:
+        	flash("Not the Llama you are looking for.","danger")
+        	return redirect(url_for('profile'))
+            
+    return wrap
+
+
+
+
 ########################################    INDEX BLOCK   ##########################################
 
 @app.route("/",defaults={'width':None,'height':None})
@@ -144,6 +175,7 @@ def login():
 @app.route("/dashboard")
 @is_logged_in								#user dashboard
 def dashboard():
+	
 	blockchain = get_blockchain().chain
 	ct = time.strftime("%I:%M %p")
 	if not verifyBlockchain():
@@ -183,16 +215,17 @@ def transaction():
 		
 		accpass = user.get('password')
 		
-		session['recepient'] = form.roll.data
-		session['amount'] = form.amount.data
-		recipient = session['recepient']
+		
 
 		
 		if float(form.amount.data) <= float(balance):
 			try:
 				if sha256_crypt.verify(candidate,accpass):
-					if not isnewuser(recipient):
+					if not isnewuser(form.roll.data):
 						OTP = otp_gen()
+						session['recepient'] = form.roll.data
+						session['amount'] = form.amount.data
+						recipient = session['recepient']
 						email=session['email']
 						send(email,OTP,purpose='Transaction')
 						session['otp'] = OTP
@@ -217,20 +250,21 @@ def transaction():
 
 @is_logged_in
 @app.route("/verifytrans",methods=["POST","GET"])
+@special_trans
 def verifytrans():
 	
-	if 'recepient' in session and 'otp' in session and 'amount' in session:
-		recepient = session['recepient']
-		amount = session['amount']
-		otp = session['otp']
-		if request.method == 'POST':
-			ps = request.form['ps']
-			if str(ps) == str(otp):
-				send_campus_coins(session.get('roll'),recepient,amount)
-				session.pop('otp',None)
-				session.pop('recepient',None)
-				flash("Money Sent","success")
-				return redirect(url_for('transaction'))
+	recepient = session['recepient']
+	amount = session['amount']
+	otp = session['otp']
+	if request.method == 'POST':
+		ps = request.form['ps']
+		if str(ps) == str(otp):
+			send_campus_coins(session.get('roll'),recepient,amount)
+			session.pop('otp',None)
+			session.pop('recepient',None)
+			session.pop('amount',None)
+			flash("Money Sent","success")
+			return redirect(url_for('transaction'))
 
 	return render_template("verify.html")
 
@@ -306,24 +340,25 @@ def passchange():
 
 @is_logged_in
 @app.route("/verifypc",methods=["POST","GET"])
+@special_chps
 def verifypc():
 	
-	if 'newpass' in session and 'otp' in session:
-		users = Table("users","name","email","roll","password","confirm")
-		roll = session["roll"]
-		name = session["name"]
-		email = session["email"]
-		confirm = session["confirm"]
-		otp = session['otp']
-		if request.method == 'POST':
-			ps = request.form['ps']
-			if str(ps) == str(otp):
-				session.pop('otp',None)
-				password = session["newpass"]
-				users.replace(name,email,roll,password,confirm)
-				session.pop('newpass',None)
-				flash("Password Changed","success")
-				return redirect(url_for('profile'))
+	
+	users = Table("users","name","email","roll","password","confirm")
+	roll = session["roll"]
+	name = session["name"]
+	email = session["email"]
+	confirm = session["confirm"]
+	otp = session['otp']
+	if request.method == 'POST':
+		ps = request.form['ps']
+		if str(ps) == str(otp):
+			session.pop('otp',None)
+			password = session["newpass"]
+			users.replace(name,email,roll,password,confirm)
+			session.pop('newpass',None)
+			flash("Password Changed","success")
+			return redirect(url_for('profile'))
 
 	return render_template("verify.html")
 
@@ -381,8 +416,8 @@ def logout():
 	return redirect(url_for('login'))
 
 
-"""ERROR HANDLERS 404"""
-#Handle 404 error
+########################################    ERROR HANDLER BLOCK  ##########################################
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('handlers/404.html'), 404
