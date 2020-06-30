@@ -125,7 +125,7 @@ def confirm_email(token):
 	try:
 		roll = s.loads(token, salt='email-confirm', max_age=3600)
 	except SignatureExpired:
-		return '<h1>The token is expired!</h1>'
+		return render_template('expired-reg.html')
 	users = Table("users","name","email","roll","password","confirm")
 	user = users.getone("roll",roll)
 	email = user.get('email')
@@ -136,6 +136,26 @@ def confirm_email(token):
 	users.replace(name,email,roll,password,confirm)
 	log_in_user(roll)
 	return redirect(url_for('dashboard'))
+
+@app.route('/resend',methods=['GET','POST'])
+@is_logged_out
+def resend():
+	if request.method == 'POST':
+		roll = request.form["roll"]
+		users = Table("users","name","email","roll","password","confirm")
+		user = users.getone("roll",roll)
+		confirm = user.get('confirm')
+		if not isnewuser(roll) and confirm == '0':
+			email = user.get('email')
+			confirm_link_sender(email,roll,func_to='confirm_email',
+										salt='email-confirm',purpose='EmailVerify')
+			return render_template('tq.html')
+		else:
+			flash("Either User doesnot exists or already verified")
+			return redirect(url_for("login"))
+	return render_template('resendregreq.html')
+
+
 
 ########################################     LOGIN BLOCK  ##########################################
 
