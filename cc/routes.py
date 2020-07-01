@@ -183,7 +183,7 @@ def login():
 					return redirect(url_for("dashboard"))
 				else:
 					flash("Your Email is not confirmed",'danger')
-					return redirect(url_for('register'))			
+					return redirect(url_for('resend'))			
 			else:
 				flash("Invalid Password",'danger')
 				return redirect(url_for('login'))
