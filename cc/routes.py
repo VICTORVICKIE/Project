@@ -281,6 +281,12 @@ def verifytrans():
 		ps = request.form['ps']
 		if str(ps) == str(otp):
 			send_campus_coins(session.get('roll'),recepient,amount)
+			users = Table("users","name","email","roll","password","confirm")
+			user = users.getone("roll",recepient)
+			email = user.get('email') 
+			message = f'{session.get("name")}-{amount}'
+			send(email,message=message,purpose="receiver")
+			send(email=session["email"],message=amount,purpose="sender")
 			session.pop('otp',None)
 			session.pop('recepient',None)
 			session.pop('amount',None)

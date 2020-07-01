@@ -29,6 +29,17 @@ def send(email,message,purpose):
 		msg['Subject'] = 'Password Reset Link'
 		msg.set_content(f'Click on this link to change your forgotten Password, {message}')
 
+	if purpose == 'receiver':
+		msg['Subject'] = 'Amount Credited'
+		amount = message.split("-")[1]
+		sender = message.split("-")[0]
+		msg.set_content(f'You received {amount} cc from {sender}\r\nTo check open: victorvickie.pythonanywhere.com')
+
+	if purpose == 'sender':
+		msg['Subject'] = 'Amount Debited'
+		amount = message
+		msg.set_content(f'You have been debited {amount} cc\r\nTo check open: victorvickie.pythonanywhere.com')
+
 	p = 'bisfhskwmnkbpfac'
 
 	with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:

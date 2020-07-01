@@ -143,8 +143,10 @@ def get_balance(roll):
         data = block.data.split("-->")
         if roll == data[0]:
             balance -= float(data[2])
+
         elif roll == data[1]:
             balance += float(data[2])
+            
     return balance
 
 
