@@ -151,10 +151,54 @@ def resend():
 										salt='email-confirm',purpose='EmailVerify')
 			return render_template('tq.html')
 		else:
-			flash("Either User doesnot exists or already verified")
+			flash("Either User doesnot exists or already verified",'danger')
 			return redirect(url_for("login"))
 	return render_template('resendregreq.html')
 
+@app.route('/ch_mail_req',methods=['GET','POST'])
+@is_logged_out
+def ch_mail_req():
+	if request.method == 'POST':
+		roll = request.form["roll"]
+		users = Table("users","name","email","roll","password","confirm")
+		user = users.getone("roll",roll)
+		confirm = user.get('confirm')
+		if not isnewuser(roll) and confirm == '0':
+			session["roll"] = roll
+			return redirect(url_for('ch_mail'))
+		else:
+			flash("Either User doesnot exists or already verified",'danger')
+			return redirect(url_for("login"))
+	return render_template('chmailreq.html')
+
+@app.route('/ch_mail',methods=['GET','POST'])
+@is_logged_out
+def ch_mail():
+	print(session)
+	roll = session["roll"]
+	if request.method == "POST":
+		candidate = request.form['password']
+		email = request.form['email']
+		
+		users = Table("users","name","email","roll","password","confirm")
+		user = users.getone("roll",roll)
+		accpass = user.get('password')
+
+		if sha256_crypt.verify(candidate,accpass):
+			name = user.get('name')
+			roll = roll
+			email = email
+			password = accpass
+			confirm = user.get('confirm')
+			users.replace(name,email,roll,password,confirm)
+			session.pop('roll',None)
+			flash('Email changed','success')
+			return redirect(url_for('login'))
+		else:
+			flash("Invalid Password",'danger')
+			return redirect(url_for('ch_mail'))
+
+	return render_template('ch_mail.html')
 
 
 ########################################     LOGIN BLOCK  ##########################################
@@ -189,6 +233,11 @@ def login():
 				return redirect(url_for('login'))
 
 	return render_template('login.html')
+
+@app.route("/ch_choice")
+@is_logged_out
+def ch_choice():
+	return render_template('ch_choice.html')
 
 ########################################     USER BLOCK  ##########################################
 
