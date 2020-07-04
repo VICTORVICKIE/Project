@@ -86,20 +86,18 @@ def index(width=None,height=None):
 @is_logged_out						
 def register():
 	form = Registerform(request.form)
-	users = Table("users","name","email","roll","password","confirm",primary_key='roll')
+	users = Table("users","name","email","roll","password",primary_key='roll')
 
 	if request.method == 'POST' and form.validate():
 		roll = form.roll.data
 		email = form.email.data
 		name = form.name.data
-		confirm = '0'
+		
 				
 		if isnewuser(roll): 						
 			password = sha256_crypt.hash(form.password.data)
-							
-			users.insert(name,email,roll,password,confirm)
-					
-			confirm_link_sender(email,roll,func_to='confirm_email',
+			user_data = f"{name}-{roll}-{email}-{password}"		
+			confirm_link_sender(email,user_data,func_to='confirm_email',
 										salt='email-confirm',purpose='EmailVerify')
 							
 			return render_template('tq.html')
@@ -112,10 +110,10 @@ def register():
 
 ########################################     EMAIL CONFIRMATION BLOCK  #################################
 
-def confirm_link_sender(email,roll,func_to,salt,purpose):
+def confirm_link_sender(email,user_data,func_to,salt,purpose):
 	email = email
-	roll = roll
-	token = s.dumps(roll, salt=salt)
+	user_data = user_data
+	token = s.dumps(user_data, salt=salt)
 	link = url_for(func_to, token=token, _external=True)
 	send(email,message=link,purpose=purpose)
 
@@ -123,82 +121,19 @@ def confirm_link_sender(email,roll,func_to,salt,purpose):
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
 	try:
-		roll = s.loads(token, salt='email-confirm', max_age=3600)
+		user_data = s.loads(token, salt='email-confirm', max_age=3600)
+		users = Table("users","name","email","roll","password",primary_key='roll')
 	except SignatureExpired:
 		return render_template('expired-reg.html')
-	users = Table("users","name","email","roll","password","confirm")
-	user = users.getone("roll",roll)
-	email = user.get('email')
-	password = user.get('password')
-	roll = roll
-	name = user.get('name')
-	confirm = '1'
-	users.replace(name,email,roll,password,confirm)
+	user_data = user_data.split("-")
+	name = user_data[0]
+	roll = user_data[1]
+	email = user_data[2]
+	password = user_data[3]	
+	users.insert(name,email,roll,password)
 	log_in_user(roll)
 	return redirect(url_for('dashboard'))
 
-@app.route('/resend',methods=['GET','POST'])
-@is_logged_out
-def resend():
-	if request.method == 'POST':
-		roll = request.form["roll"]
-		users = Table("users","name","email","roll","password","confirm")
-		user = users.getone("roll",roll)
-		confirm = user.get('confirm')
-		if not isnewuser(roll) and confirm == '0':
-			email = user.get('email')
-			confirm_link_sender(email,roll,func_to='confirm_email',
-										salt='email-confirm',purpose='EmailVerify')
-			return render_template('tq.html')
-		else:
-			flash("Either User doesnot exists or already verified",'danger')
-			return redirect(url_for("login"))
-	return render_template('resendregreq.html')
-
-@app.route('/ch_mail_req',methods=['GET','POST'])
-@is_logged_out
-def ch_mail_req():
-	if request.method == 'POST':
-		roll = request.form["roll"]
-		users = Table("users","name","email","roll","password","confirm")
-		user = users.getone("roll",roll)
-		confirm = user.get('confirm')
-		if not isnewuser(roll) and confirm == '0':
-			session["roll"] = roll
-			return redirect(url_for('ch_mail'))
-		else:
-			flash("Either User doesnot exists or already verified",'danger')
-			return redirect(url_for("login"))
-	return render_template('chmailreq.html')
-
-@app.route('/ch_mail',methods=['GET','POST'])
-@is_logged_out
-def ch_mail():
-	print(session)
-	roll = session["roll"]
-	if request.method == "POST":
-		candidate = request.form['password']
-		email = request.form['email']
-		
-		users = Table("users","name","email","roll","password","confirm")
-		user = users.getone("roll",roll)
-		accpass = user.get('password')
-
-		if sha256_crypt.verify(candidate,accpass):
-			name = user.get('name')
-			roll = roll
-			email = email
-			password = accpass
-			confirm = user.get('confirm')
-			users.replace(name,email,roll,password,confirm)
-			session.pop('roll',None)
-			flash('Email changed','success')
-			return redirect(url_for('login'))
-		else:
-			flash("Invalid Password",'danger')
-			return redirect(url_for('ch_mail'))
-
-	return render_template('ch_mail.html')
 
 
 ########################################     LOGIN BLOCK  ##########################################
@@ -210,34 +145,26 @@ def login():
 		roll = request.form['roll']
 		candidate = request.form['password']
 
-		users = Table("users","name","email","roll","password","confirm")
+		users = Table("users","name","email","roll","password")
 		user = users.getone("roll",roll)
 		accpass = user.get('password')
-		confirm = user.get('confirm')
 
 		if accpass is None:
-			flash("roll not found",'danger')
+			flash("Invalid User",'danger')
 			return redirect(url_for('login'))
 
 		else:
 			if sha256_crypt.verify(candidate,accpass):
-				if confirm == '1':	
-					log_in_user(roll)
-					flash("You are logged in",'success')
-					return redirect(url_for("dashboard"))
-				else:
-					flash("Your Email is not confirmed",'danger')
-					return redirect(url_for('resend'))			
+					
+				log_in_user(roll)
+				flash("You are logged in",'success')
+				return redirect(url_for("dashboard"))
 			else:
 				flash("Invalid Password",'danger')
 				return redirect(url_for('login'))
 
 	return render_template('login.html')
 
-@app.route("/ch_choice")
-@is_logged_out
-def ch_choice():
-	return render_template('ch_choice.html')
 
 ########################################     USER BLOCK  ##########################################
 
@@ -280,7 +207,7 @@ def transaction():
 		roll = session['roll']
 		candidate = request.form['password']
 		
-		users = Table("users","name","email","roll","password","confirm")
+		users = Table("users","name","email","roll","password")
 		user = users.getone("roll",roll)
 		
 		accpass = user.get('password')
@@ -330,7 +257,7 @@ def verifytrans():
 		ps = request.form['ps']
 		if str(ps) == str(otp):
 			send_campus_coins(session.get('roll'),recepient,amount)
-			users = Table("users","name","email","roll","password","confirm")
+			users = Table("users","name","email","roll","password")
 			user = users.getone("roll",recepient)
 			email = user.get('email') 
 			message = f'{session.get("name")}-{amount}'
@@ -369,13 +296,13 @@ def buy():
 ########################################    SESSION BLOCK  ########################################
 
 def log_in_user(roll):
-	users = Table("users","name","email","roll","password","confirm")
+	users = Table("users","name","email","roll","password")
 	user = users.getone("roll",roll)
 	session["logged_in"] = True
 	session["roll"] = roll
 	session["name"] = user.get('name')
 	session["email"] = user.get('email')
-	session['confirm'] = user.get('confirm')
+	
 
 #######################################    PROFILE BLOCK  ########################################
 
@@ -396,7 +323,7 @@ def passchange():
 		newpass = request.form["newpassword"]
 		confirmnew = request.form["newconfirm"]
 		roll = session["roll"]
-		users = Table("users","name","email","roll","password","confirm")
+		users = Table("users","name","email","roll","password")
 		user = users.getone("roll",roll)
 		accpass = user.get('password')
 		if sha256_crypt.verify(oldpass,accpass):
@@ -420,18 +347,17 @@ def passchange():
 def verifypc():
 	
 	
-	users = Table("users","name","email","roll","password","confirm")
+	users = Table("users","name","email","roll","password")
 	roll = session["roll"]
 	name = session["name"]
 	email = session["email"]
-	confirm = session["confirm"]
 	otp = session['otp']
 	if request.method == 'POST':
 		ps = request.form['ps']
 		if str(ps) == str(otp):
 			session.pop('otp',None)
 			password = session["newpass"]
-			users.replace(name,email,roll,password,confirm)
+			users.replace(name,email,roll,password)
 			session.pop('newpass',None)
 			flash("Password Changed","success")
 			return redirect(url_for('profile'))
@@ -445,7 +371,7 @@ def forgotpass():
 	if request.method == 'POST':
 		roll = request.form["roll"]
 		if not isnewuser(roll):
-			users = Table("users","name","email","roll","password","confirm")
+			users = Table("users","name","email","roll","password")
 			user = users.getone("roll",roll)
 			email = user.get('email')
 			confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
@@ -463,14 +389,13 @@ def check(token):
 			if request.form["password"] == request.form["confirmreset"]:
 				newpass = request.form["password"]
 				password = sha256_crypt.hash(newpass)
-				users = Table("users","name","email","roll","password","confirm")
+				users = Table("users","name","email","roll","password")
 				user = users.getone("roll",roll)
 				name = user.get('name')
 				email = user.get('email')
-				roll = roll
-				confirm = user.get('confirm')				
+				roll = roll				
 
-				users.replace(name,email,roll,password,confirm)
+				users.replace(name,email,roll,password)
 				flash("Password Changed","success")
 				return redirect(url_for('login'))
 

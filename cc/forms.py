@@ -13,15 +13,42 @@ class Registerform(Form):
 		email = email.data 
 		regex1 = '^[a-zA-Z0-9_.+-]+@rajalakshmi+\.[edu.in]+$'
 		regex2 = '^[a-zA-Z0-9_.+-]+@gmail+\.[com]+$'
-		if(re.search(regex1,email)) or (re.search(regex2,email)): 
-			print("Valid Email") 
+		if "-" not in email:
+			if(re.search(regex1,email)) or (re.search(regex2,email)): 
+				pass 
 			
-		else: 
-			raise validators.ValidationError("Domain Name not Supported")
+			else: 
+				raise validators.ValidationError("Domain Name not Supported")
+		else:
+			raise validators.ValidationError("Field got an unsupported character as input")
+	def validate_name(self,name):
+		name = name.data
+		if ("-" in name):
+			raise validators.ValidationError("Field got an unsupported character as input")
+		else:
+			pass
+	def validate_roll(self,roll):
+		roll = roll.data
+		if ("-" in roll):
+			raise validators.ValidationError("Field got an unsupported character as input")
+		else:
+			pass
+	def validate_password(self,password):
+		password = password.data
+		if ("-" in password):
+			raise validators.ValidationError("Field got an unsupported character as input")
+		else:
+			pass
+	def validate_confirm(self,confirm):
+		confirm = confirm.data
+		if ("-" in confirm):
+			raise validators.ValidationError("Field got an unsupported character as input")
+		else:
+			pass
 
 
 class SendCCForm(Form):
-	roll = StringField('Roll Number',[validators.InputRequired(message="Recipient Roll/Staff Number required"),validators.Length(min=1,max=15,message='Recipient Roll/Staff Number')])
+	roll = StringField('Recipient`s ID',[validators.InputRequired(message="Recipient Roll/Staff Number required"),validators.Length(min=1,max=15,message='Recipient Roll/Staff Number')])
 	amount = StringField('Amount',[validators.InputRequired(message="Transaction Amount required"),validators.Length(min=1,max=50)])
 	password = PasswordField('Password',[validators.DataRequired()],id="pass")
 

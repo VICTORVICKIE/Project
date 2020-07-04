@@ -28,7 +28,7 @@
                         </div>
                         {% include 'includes/_messages.html' %}
                         {% from "includes/_formhelpers.html" import render_field %}
-                        <form method="POST" action="">
+                        <form method="POST" action="" autocomplete="off">
                                 <div class="row register-form">
                                    <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
@@ -88,18 +88,22 @@
 
             </div>
             <script>
-                                    function myFunction() {
-                                      var x = document.getElementById("confirm");
-                                      var y = document.getElementById("password");
-                                      if ((x.type === "password") && (y.type === "password")) {
-                                        x.type = "text";
-                                        y.type = "text";
-                                      } else {
-                                        x.type = "password";
-                                        y.type = "password";
+                function myFunction() {
+                    var x = document.getElementById("confirm");
+                    var y = document.getElementById("password");
+                    if ((x.type === "password") && (y.type === "password"))
+                    {
+                        x.type = "text";
+                        y.type = "text";
+                    }
+                    else 
+                    {
+                        x.type = "password";
+                        y.type = "password";
                                       }
-                                    }
-                                    </script>
+                    }
+                                    
+            </script>
 
 </body>
 </html>

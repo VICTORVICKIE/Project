@@ -42,9 +42,9 @@ class Table():
         if result > 0: data = cur.fetchone()
         cur.close(); return data
 
-    def replace(self,name,email,roll,password,confirm):
+    def replace(self,name,email,roll,password):
     	cur = mysql.connection.cursor()
-    	cur.execute("REPLACE INTO  %s(name,email,roll,password,confirm) VALUES(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"%(self.table,name,email,roll,password,confirm))
+    	cur.execute("REPLACE INTO  %s(name,email,roll,password) VALUES(\"%s\",\"%s\",\"%s\",\"%s\")"%(self.table,name,email,roll,password))
     	mysql.connection.commit(); cur.close()
 
 
