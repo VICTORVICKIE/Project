@@ -3,8 +3,9 @@
 <title>RECurrency</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-amber.css">
-<body style="max-width:600px;background-color: #3d3d3d">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-purple.css">
+<body style="max-width:600px;background: url({{ url_for('static', filename='image/download.jpg') }}),#9c27b0;background-repeat: no-repeat;
+  background-size: 100% 120%">
 
 <nav class="w3-sidebar w3-theme w3-bar-block w3-card" id="mySidebar">
 <div class="w3-container w3-theme-d2">
@@ -27,15 +28,21 @@
 <hr>
 <div class="w3-cell-row">
   <div class="w3-cell w3-container">
+    <br>
+    <br>
     <h3 style="text-align: center;" >Welcome,</h3>
     <p style="text-align: center;font-size: 20px;">We simplified the Blockchain Technology of sending money by our user-friendly interface and efficient servers.</p>
     <br>
-    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: #ffbf00;"  onclick="window.location.href='/login';">Login</button></p>
+    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: yellow;"  onclick="window.location.href='/login';">Login</button></p>
     <br>
-    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: #ffbf00;" onclick="window.location.href='/register';">Get Started</button></p>
+    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: yellow;" onclick="window.location.href='/register';">Get Started</button></p>
   </div>
 </div>  
 <hr>
+</div>
+<footer class="w3-container w3-bottom w3-theme">
+  <h3 align="center" >Future Project 2020 - RECurrency</h3>
+</footer>
 <script>
 closeSidebar();
 function openSidebar() {

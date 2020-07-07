@@ -10,8 +10,10 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/login_style.css')}}">
 </head>
-<body>
+<body style="background-image: url({{ url_for('static', filename='image/banner-1.jpg') }});">
 	{% include 'includes/_messages.html' %}
+	<br>
+	<br>
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 			<div class="user_card">
@@ -27,7 +29,7 @@
 					<form method="POST" action="">
 						<div class="input-group mb-3">
 							
-							<label style="font-size: 20px;padding-left: 90px" >Login</label>
+							<label style="font-size: 20px;padding-left: 90px;color: white;" >Login</label>
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-append">
@@ -42,24 +44,24 @@
 							<input type="password" id="password" name="password" class="form-control input_pass" placeholder="password" autofocus="autofocus" value={{request.form.password}}>
 						</div>
 						<div class="input-group mb-1">
-							<input   type="checkbox" onclick="myFunction()"><span style="vertical-align: middle;">Show Password</span>
+							<input    type="checkbox" onclick="myFunction()"><span style="vertical-align: middle;color: white;">Show Password</span>
 						</div>
 						
 						
 							<div class="d-flex justify-content-center mt-3 login_container">
 
-				 	<button type="submit" name="button" class="btn login_btn">Login</button>
+				 	<button style="color: yellow;" type="submit" name="button" class="btn login_btn">Login</button>
 				   </div>
 
 					</form>
 				</div>
 		
 				<div class="mt-4">
-					<div class="d-flex justify-content-center links">
+					<div class="d-flex justify-content-center links" style="color: white;"  >
 						Don't have an account? <a href="{{url_for('register')}}" class="ml-2">Sign Up</a>
 					</div>
-					<div class="d-flex justify-content-center links">
-						<a href="/forgotpass">Forgot Password ?</a>
+					<div  class="d-flex justify-content-center links">
+						<a style="color: red;" href="/forgotpass">Forgot Password ?</a>
 					</div>
 				</div>
 			</div>

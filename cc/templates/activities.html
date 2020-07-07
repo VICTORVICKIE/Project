@@ -16,12 +16,14 @@
           <tr>
             <th>All Transaction</th>
             <th>Amount</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
             <th>All Transaction</th>
-            <th>Hash</th>
+            <th>Amount</th>
+            <th>Time</th>
           </tr>
         </tfoot>
         <tbody>
@@ -33,6 +35,7 @@
 
                     <td>{{ block.data.split("-->")[1]}}</td>
     	              <td><font color="red">{{'- ' + block.data.split("-->")[2] + ' cc'}}</font></td>
+                    <td>{{ block.data.split("-->")[3]}}</td>
                   {% endif %}
 
 
@@ -40,6 +43,7 @@
 
                     <td>{{ block.data.split("-->")[0]}}</td>
                     <td><font color="green">{{'+' + block.data.split("-->")[2] + ' cc'}}</font></td>
+                    <td>{{ block.data.split("-->")[3]}}</td>
                   {% endif %}
 	              
 	            {% endif %}

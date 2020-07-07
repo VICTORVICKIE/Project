@@ -116,7 +116,7 @@ def sync_blockchain(blockchain):
         blockchain_sql.insert(str(block.number), block.hash(), block.previous_hash, block.data, block.nonce)
 
 
-def send_campus_coins(sender, recipient, amount):
+def send_campus_coins(sender, recipient, amount,time):
     try:
         amount = float(amount)
     except ValueError:
@@ -132,7 +132,7 @@ def send_campus_coins(sender, recipient, amount):
 
     blockchain = get_blockchain()
     number = len(blockchain.chain) + 1
-    data = f"{sender}-->{recipient}-->{amount}"
+    data = f"{sender}-->{recipient}-->{amount}-->{time}"
     blockchain.mine(Block(number,data=data))
     sync_blockchain(blockchain)
 

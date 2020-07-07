@@ -6,7 +6,7 @@ from cc.otp_gen import otp_gen
 from functools import wraps
 from cc.sqlhelpers import *
 from cc.forms import *
-import time, os
+import time, os,datetime
 from cc import app
 
 s = URLSafeTimedSerializer(os.urandom(24))
@@ -189,11 +189,12 @@ def activities():
 	if "roll" in session:
 		blockchain = get_blockchain().chain
 		roll = session["roll"]
+		ct = time.strftime("%I:%M %p")
 		blockchain = blockchain[::-1]
 		balance = get_balance(session.get('roll'))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
-			page='activities')
+			page='activities',ct=ct)
 
 ########################################     TRANSACTION BLOCK  ##########################################
 
@@ -211,9 +212,6 @@ def transaction():
 		user = users.getone("roll",roll)
 		
 		accpass = user.get('password')
-		
-		
-
 		
 		if float(form.amount.data) <= float(balance):
 			try:
@@ -256,7 +254,9 @@ def verifytrans():
 	if request.method == 'POST':
 		ps = request.form['ps']
 		if str(ps) == str(otp):
-			send_campus_coins(session.get('roll'),recepient,amount)
+			time = datetime.datetime.now().strftime("at %H:%M on %d-%m-%Y")
+			# print(time)
+			send_campus_coins(session.get('roll'),recepient,amount,time)
 			users = Table("users","name","email","roll","password")
 			user = users.getone("roll",recepient)
 			email = user.get('email') 
@@ -282,7 +282,8 @@ def buy():
 	if request.method == 'POST':
 		try:
 			if int(form.amount.data)<10000000:
-				send_campus_coins("BANK",session.get('roll'),form.amount.data)
+				time = datetime.datetime.now().strftime("at %H:%M on %d-%m-%Y")
+				send_campus_coins("BANK",session.get('roll'),form.amount.data,time)
 				flash("Purchase Successfull","success")
 			else:
 				raise InvalidTranscationException("Amount too High!")

@@ -41,7 +41,7 @@ body {
 
 .left {
   left: 0;
-  background-color: #3D3D3D;
+  background: -webkit-linear-gradient(rgba(106,61,142,0.7), rgba(129,0,129,1));
    
 
 }
@@ -67,7 +67,7 @@ body {
 }
 .btn-clr {
   color: black;
-  background-color: #FCD40A;
+  background-color: #2035a8;
 }
 .carousel-control-prev-icon {
  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FCD40A' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
@@ -81,27 +81,38 @@ body {
 <body>
 
 
-<div class="split left">
+<div style="background-image: url({{ url_for('static', filename='image/banner-1-40.jpg') }});background-repeat: no-repeat;
+background-size:100% 100%;
+background-position: center;"
+ class="split left">
 
   <div class="centered">
-    <h1 >Welcome,</h1>
-            <p style="font-size: 20px">We simplified the Blockchain Technology of sending money by our user-friendly interface and efficient servers.</p>
+    <br>
+    <br>
+    <br>
+    <h1 style="" >Welcome,</h1>
+    <br>
+    <br>
+    <br>
+            <p style="font-size: 20px; color: rgba(129,0,129,1);">We simplified the Blockchain Technology of sending money by our user-friendly interface and efficient servers.</p>
             <br>
 
-            <p><a href="/login" class="btn btn-lg btn-clr">Login</a></p>
+            <p><a style="background-color: yellow"  href="/login" class="btn btn-lg btn-clr">Login</a></p>
             <br>
-            <p><a href="/register" class="btn btn-lg btn-clr">Get Started</a></p>
+            <p><a style="background-color: yellow" href="/register" class="btn btn-lg btn-clr">Get Started</a></p>
   
   </div>
 </div>
 
-<div class="split right">
+<div style="background-image: url({{ url_for('static', filename='image/banner-1-60.jpg') }});background-repeat: no-repeat;
+background-size:100% 100%;
+background-position: center;" class="split right">
   <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header ">
-      <a class="navbar-brand" ><h1>RECurrency</h1></a>
+      <a class="navbar-brand" ><h1 style="color: black; text-decoration-line: underline;" >RECurrency</h1></a>
     </div>
-    <button   style="background-color: #FCD40A" class="btn  navbar-btn">About</button>
+    <button   style="background-color: yellow" class="btn  navbar-btn">About</button>
         
   </div>
 </nav>

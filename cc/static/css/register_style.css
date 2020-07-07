@@ -1,8 +1,10 @@
-body{background-color: #3D3D3D }
+body{/*background: -webkit-linear-gradient(left, #3D3D3D, #bb9999); */}
 .register{
-    background: -webkit-linear-gradient(left, #3D3D3D, #3D3D3D);
-    margin-top: 3%; 
+    /*background: -webkit-linear-gradient(left, #3D3D3D, #bb9999);*/
+    margin-top: 6%; 
     padding: 3%;
+    border-top-right-radius: 10% 40%;
+    border-bottom-left-radius: 10% 40%;
 }
 .register-left{
     text-align: center;
@@ -22,9 +24,9 @@ body{background-color: #3D3D3D }
     cursor: pointer;
 }
 .register-right{
-    background:  #FCD40A;
-    border-top-left-radius: 10% 50%;
-    border-bottom-left-radius: 10% 50%;
+	background: -webkit-linear-gradient(rgba(106,61,142,0.8), rgba(129,0,129,1));
+    border-top-right-radius: 10% 40%;
+    border-bottom-left-radius: 10% 40%;
 }
 .register-left img{
     margin-top: 15%;
