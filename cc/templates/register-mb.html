@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Register</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/register_style.css')}}">
+    
+</head>
+<body>
+	<div class="container register">
+                <div class="row">
+                    <div class="col-md-3 register-left">
+                        <img src="{{url_for('static',filename='image/coin.png')}}" alt="" style="max-width:100%;height:auto;">
+                        <br>
+                        <br>
+                        <br>
+                        <h3 style="color: black"  >Welcome</h3>
+                        <p style="color: black" >You are 30 seconds away from earning your own money!</p>
+                        <a href="{{url_for('login')}}"><input style="background-color: yellow" type="submit" name="" value="Login"/><br/></a>
+                    </div>
+                    <div class="col-md-9 register-right">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="panel-heading">
+                        <h3 class="panel-title" align="center">Register</h3>
+                        </div>
+                        {% include 'includes/_messages.html' %}
+                        {% from "includes/_formhelpers.html" import render_field %}
+                        <form method="POST" action="" autocomplete="off">
+                                <div class="row register-form">
+                                   <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <!-- <input type="text" name="name" id="name" class="form-control input-sm" placeholder="Name" autofocus="autofocus" value={{request.form.name}}> -->
+                                            {{render_field(form.name, class_="form-control",placeholder="Full Name",autofocus="autofocus")}}
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <!-- <input type="text" name="roll" id="roll" class="form-control input-sm" placeholder="Roll Number" autofocus="autofocus"  value={{request.form.roll}}> -->
+                                            {{render_field(form.roll, class_="form-control",placeholder="Roll/Staff Number",autofocus="autofocus")}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row register-form">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <div class="form-group">
+                                            <!-- <input  type="text" name="email" id="email" class="form-control input-sm" placeholder="Email" autofocus="autofocus"  value={{request.form.email}}> -->
+                                            {{render_field(form.email, class_="form-control",placeholder="Email",autofocus="autofocus")}}
+                                        </div>
+                                    </div>
+                                    </div>
+                               
+                                    
+                                <div class="row register-form">
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <!-- <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" autofocus="autofocus"  value={{request.form.password}}> -->
+                                            {{render_field(form.password, class_="form-control",placeholder="Password",autofocus="autofocus")}}
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <!-- <input type="password" name="confirm" id="confirm" class="form-control input-sm" placeholder="Confirm Password" autofocus="autofocus"  value={{request.form.confirm}}> -->
+                                            {{render_field(form.confirm, class_="form-control",placeholder="Retype Password",autofocus="autofocus")}}
+                                            <!-- {{form.confirm(placeholder="Retype Password")}} -->
+                                            
+
+                                    
+                                        </div>
+                                    </div>
+
+                                    
+                                </div>
+                                <div style="color: white;" class="col-xs-6 col-sm-6 col-md-6">
+                                <input  type="checkbox" onclick="myFunction()">    Show Password
+                            </div>
+                                <button style="background-color: yellow" type="submit" name="button" class="btnRegister">Register</button>
+                                </form>
+                                    <!--</div>-->
+                                <!--</div>-->
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <script>
+                function myFunction() {
+                    var x = document.getElementById("confirm");
+                    var y = document.getElementById("password");
+                    if ((x.type === "password") && (y.type === "password"))
+                    {
+                        x.type = "text";
+                        y.type = "text";
+                    }
+                    else 
+                    {
+                        x.type = "password";
+                        y.type = "password";
+                                      }
+                    }
+                                    
+            </script>
+
+</body>
+</html>

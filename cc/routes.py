@@ -6,8 +6,14 @@ from cc.otp_gen import otp_gen
 from functools import wraps
 from cc.sqlhelpers import *
 from cc.forms import *
-import time, os,datetime
+import time, os
+from datetime import datetime,timedelta
 from cc import app
+
+def ist_time_now()
+	ist = datetime.utcnow() + timedelta(minutes=330)
+	istfm = ist.strftime("at %H:%M on %d-%m-%Y")
+	return istfm
 
 s = URLSafeTimedSerializer(os.urandom(24))
 
@@ -75,6 +81,7 @@ def index(width=None,height=None):
 		(() => window.location.href = ['',window.innerWidth,window.innerHeight].join('/'))()
 		</script>
 		"""
+	session["width"] = width
 	if int(width) > 992:
 		return render_template('index-pc.html')
 	else:
@@ -87,27 +94,53 @@ def index(width=None,height=None):
 def register():
 	form = Registerform(request.form)
 	users = Table("users","name","email","roll","password",primary_key='roll')
+	width = session.get("width",None)
 
-	if request.method == 'POST' and form.validate():
-		roll = form.roll.data
-		email = form.email.data
-		name = form.name.data
-		
-				
-		if isnewuser(roll): 						
-			password = sha256_crypt.hash(form.password.data)
-			user_data = f"{name}-{roll}-{email}-{password}"		
-			confirm_link_sender(email,user_data,func_to='confirm_email',
-										salt='email-confirm',purpose='EmailVerify')
-							
-			return render_template('tq.html')
-						
-		else:
-			flash('user already exists','danger')
-			return redirect(url_for('login'))
+	if not width:
+		return redirect(url_for('index'))
+
+
+	elif int(width) > 992:
+		if request.method == 'POST' and form.validate():
+			roll = form.roll.data
+			email = form.email.data
+			name = form.name.data
 			
-	return render_template('register.html',form=form)
-
+					
+			if isnewuser(roll): 						
+				password = sha256_crypt.hash(form.password.data)
+				user_data = f"{name}-{roll}-{email}-{password}"		
+				confirm_link_sender(email,user_data,func_to='confirm_email',
+											salt='email-confirm',purpose='EmailVerify')
+								
+				return render_template('tq.html')
+							
+			else:
+				flash('user already exists','danger')
+				return redirect(url_for('login'))
+				
+		return render_template('register.html',form=form)
+	elif int(width) < 992:
+		if request.method == 'POST' and form.validate():
+			roll = form.roll.data
+			email = form.email.data
+			name = form.name.data
+			
+					
+			if isnewuser(roll): 						
+				password = sha256_crypt.hash(form.password.data)
+				user_data = f"{name}-{roll}-{email}-{password}"		
+				confirm_link_sender(email,user_data,func_to='confirm_email',
+											salt='email-confirm',purpose='EmailVerify')
+								
+				return render_template('tq.html')
+							
+			else:
+				flash('user already exists','danger')
+				return redirect(url_for('login'))
+				
+		return render_template('register-mb.html',form=form)
+	
 ########################################     EMAIL CONFIRMATION BLOCK  #################################
 
 def confirm_link_sender(email,user_data,func_to,salt,purpose):
@@ -141,31 +174,59 @@ def confirm_email(token):
 @app.route("/login", methods=['GET','POST'])
 @is_logged_out			#login page
 def login():
-	if request.method == 'POST':
-		roll = request.form['roll']
-		candidate = request.form['password']
+	width = session.get("width",None)
+	if not width:
+		return redirect(url_for('index'))
 
-		users = Table("users","name","email","roll","password")
-		user = users.getone("roll",roll)
-		accpass = user.get('password')
+	elif int(width)>992: 
+		if request.method == 'POST':
+			roll = request.form['roll']
+			candidate = request.form['password']
 
-		if accpass is None:
-			flash("Invalid User",'danger')
-			return redirect(url_for('login'))
+			users = Table("users","name","email","roll","password")
+			user = users.getone("roll",roll)
+			accpass = user.get('password')
 
-		else:
-			if sha256_crypt.verify(candidate,accpass):
-					
-				log_in_user(roll)
-				flash("You are logged in",'success')
-				return redirect(url_for("dashboard"))
-			else:
-				flash("Invalid Password",'danger')
+			if accpass is None:
+				flash("Invalid User",'danger')
 				return redirect(url_for('login'))
 
-	return render_template('login.html')
+			else:
+				if sha256_crypt.verify(candidate,accpass):
+						
+					log_in_user(roll)
+					flash("You are logged in",'success')
+					return redirect(url_for("dashboard"))
+				else:
+					flash("Invalid Password",'danger')
+					return redirect(url_for('login'))
 
+		return render_template('login.html')
 
+	elif int(width)<992:
+		if request.method == 'POST':
+			roll = request.form['roll']
+			candidate = request.form['password']
+
+			users = Table("users","name","email","roll","password")
+			user = users.getone("roll",roll)
+			accpass = user.get('password')
+
+			if accpass is None:
+				flash("Invalid User",'danger')
+				return redirect(url_for('login'))
+
+			else:
+				if sha256_crypt.verify(candidate,accpass):
+						
+					log_in_user(roll)
+					flash("You are logged in",'success')
+					return redirect(url_for("dashboard"))
+				else:
+					flash("Invalid Password",'danger')
+					return redirect(url_for('login'))
+
+		return render_template('login-mb.html')
 ########################################     USER BLOCK  ##########################################
 
 @app.route("/dashboard")
@@ -173,7 +234,7 @@ def login():
 def dashboard():
 	
 	blockchain = get_blockchain().chain
-	ct = time.strftime("%I:%M %p")
+	ct = ist_time_now()
 	if not verifyBlockchain():
 		flash("Corrupt blockchain.","danger")
 		return redirect(url_for('index'))
@@ -189,7 +250,7 @@ def activities():
 	if "roll" in session:
 		blockchain = get_blockchain().chain
 		roll = session["roll"]
-		ct = time.strftime("%I:%M %p")
+		ct = ist_time_now()
 		blockchain = blockchain[::-1]
 		balance = get_balance(session.get('roll'))
 		return render_template('activities.html',balance=balance,
@@ -254,7 +315,7 @@ def verifytrans():
 	if request.method == 'POST':
 		ps = request.form['ps']
 		if str(ps) == str(otp):
-			time = datetime.datetime.now().strftime("at %H:%M on %d-%m-%Y")
+			time = ist_time_now()
 			# print(time)
 			send_campus_coins(session.get('roll'),recepient,amount,time)
 			users = Table("users","name","email","roll","password")
@@ -282,7 +343,7 @@ def buy():
 	if request.method == 'POST':
 		try:
 			if int(form.amount.data)<10000000:
-				time = datetime.datetime.now().strftime("at %H:%M on %d-%m-%Y")
+				time = ist_time_now()
 				send_campus_coins("BANK",session.get('roll'),form.amount.data,time)
 				flash("Purchase Successfull","success")
 			else:
@@ -369,17 +430,33 @@ def verifypc():
 
 @app.route("/forgotpass",methods=['GET','POST'])
 def forgotpass():
-	if request.method == 'POST':
-		roll = request.form["roll"]
-		if not isnewuser(roll):
-			users = Table("users","name","email","roll","password")
-			user = users.getone("roll",roll)
-			email = user.get('email')
-			confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
-			return render_template('resetlinkmail.html')
-			
-	return render_template('forgotpassreq.html')
+	width = session.get("width",None)
+	if not width:
+		return redirect(url_for('index'))
 
+	elif int(width)>992:	
+		if request.method == 'POST':
+			roll = request.form["roll"]
+			if not isnewuser(roll):
+				users = Table("users","name","email","roll","password")
+				user = users.getone("roll",roll)
+				email = user.get('email')
+				confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
+				return render_template('resetlinkmail.html')
+				
+		return render_template('forgotpassreq.html')
+	elif int(width)<992:
+		if request.method == 'POST':
+			roll = request.form["roll"]
+			if not isnewuser(roll):
+				users = Table("users","name","email","roll","password")
+				user = users.getone("roll",roll)
+				email = user.get('email')
+				confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
+				return render_template('resetlinkmail.html')
+				
+		return render_template('forgotpassreq-mb.html')
+		
 ########################################    FORGOT PASS VERIFY BLOCK  ########################################
 
 @app.route("/check/<token>",methods=['GET','POST'])
