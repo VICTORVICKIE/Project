@@ -118,7 +118,7 @@ def sync_blockchain(blockchain):
 
 def send_campus_coins(sender, recipient, amount,time):
     try:
-        amount = float(amount)
+        amount = int(amount)
     except ValueError:
         raise InvalidTranscationException("Invalid Transcation.")
 
@@ -142,10 +142,10 @@ def get_balance(roll):
     for block in blockchain.chain:
         data = block.data.split("-->")
         if roll == data[0]:
-            balance -= float(data[2])
+            balance -= int(data[2])
 
         elif roll == data[1]:
-            balance += float(data[2])
+            balance += int(data[2])
             
     return balance
 

@@ -9,6 +9,10 @@ from cc.forms import *
 import time, os
 from datetime import datetime,timedelta
 from cc import app
+import razorpay
+import json
+
+razorpay_client = razorpay.Client(auth=("rzp_test_WlDtMQc5tuvZQ3", "sbefqLfUE0VpM0TJWOTGxKoT"))
 
 def ist_time_now():
 	ist = datetime.utcnow() + timedelta(minutes=330)
@@ -274,7 +278,7 @@ def transaction():
 		
 		accpass = user.get('password')
 		
-		if float(form.amount.data) <= float(balance):
+		if int(form.amount.data) <= int(balance) and int(form.amount.data) > 0:
 			try:
 				if sha256_crypt.verify(candidate,accpass):
 					if not isnewuser(form.roll.data):
@@ -316,7 +320,7 @@ def verifytrans():
 		ps = request.form['ps']
 		if str(ps) == str(otp):
 			time = ist_time_now()
-			# print(time)
+			
 			send_campus_coins(session.get('roll'),recepient,amount,time)
 			users = Table("users","name","email","roll","password")
 			user = users.getone("roll",recepient)
@@ -342,10 +346,9 @@ def buy():
 
 	if request.method == 'POST':
 		try:
-			if int(form.amount.data)<10000000:
-				time = ist_time_now()
-				send_campus_coins("BANK",session.get('roll'),form.amount.data,time)
-				flash("Purchase Successfull","success")
+			if int(form.amount.data)>0:
+				session["pay-amount"] = int(form.amount.data) * 100
+				return redirect(url_for("razor_payment"))
 			else:
 				raise InvalidTranscationException("Amount too High!")
 
@@ -354,6 +357,33 @@ def buy():
 
 		return redirect(url_for('buy'))
 	return render_template("buy.html",balance=balance,form=form, page='buy')
+
+##################################   PAYMENT GATEWAY BLOCK  ##########################################
+
+@app.route("/payment",methods=["GET","POST"])
+@is_logged_in
+def razor_payment():
+	amount = session["pay-amount"]
+	email = session["email"]
+	balance = get_balance(session.get('roll'))
+	return render_template('razorpay-int.html',amount=amount,session=session,balance=balance)
+
+@app.route('/charge', methods=['POST'])
+@is_logged_in
+def app_charge():
+    amount = int(session["pay-amount"])
+    payment_id = request.form['razorpay_payment_id']
+    razorpay_client.payment.capture(payment_id, amount)
+    status = razorpay_client.payment.fetch(payment_id)["status"]
+    
+    if status == 'captured':
+    	amount = int((razorpay_client.payment.fetch(payment_id)["amount"])/100)
+    	time = ist_time_now()
+    	send_campus_coins("BANK",session.get('roll'),amount,time)
+    	flash("Purchase Successfull","success")
+    	return redirect(url_for("transaction"))
+    elif status == 'failed':
+    	return "failed"
 
 ########################################    SESSION BLOCK  ########################################
 
@@ -490,7 +520,9 @@ def check(token):
 @app.route("/logout")									#logout
 @is_logged_in
 def logout():
+	width = session["width"]
 	session.clear()
+	session["width"] = width
 	flash("Logout success","success")
 	return redirect(url_for('login'))
 

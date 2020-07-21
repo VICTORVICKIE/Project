@@ -2,7 +2,7 @@
 <html lang="en">
 
   <head>
-
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,10 +24,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/profile_style.css')}}">
-
   </head>
 
-  <body id="page-top">
+  <body onload="autoToggle4mobile()" id="page-top">
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
@@ -153,7 +152,13 @@
     <script src="{{url_for('static',filename='js/sb-admin.min.js')}}"></script>
     <script src="{{url_for('static',filename='js/demo/datatables-demo.js')}}"></script>
     <script src="{{url_for('static',filename='js/demo/chart-area-demo.js')}}"></script>
-
+    <script>
+      function autoToggle4mobile() 
+        {
+  document.getElementById("sidebarToggle").click();
+};
+      
+    </script>
   </body>
 
 </html>

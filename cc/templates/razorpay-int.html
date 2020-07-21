@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+<head>
+<meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+</head>
+{% block body %}
+{% include 'includes/_messages.html' %}
+<h6 style="padding: 10px;background-color: rgba(0,0,0,.03);" >Your current balance is {{ balance }} CC</h6>
+
+<style type="text/css">
+        .razorpay-payment-button{
+            border-radius: 10px;
+           color:#fff;background-color:#5cb85c;border-color:#4cae4c;
+            position: absolute;
+            top:35%;
+            left:45%;
+        }
+        .razorpay-payment-button:hover{
+         color:#fff;background-color:#449d44;border-color:#398439
+
+        }
+        .no-button{
+            border-radius: 10px;
+           color:#fff;background-color:#d9534f;border-color:#d43f3a;
+            position: absolute;
+            top:35%;
+            left:50%;
+        }
+        .no-button:hover{
+         color:#fff;background-color:#c9302c;border-color:#ac2925
+
+        }
+    </style>
+    <h5 style="padding: 10px;background-color: rgba(0,0,0,.03);">Would You like to Buy {{amount/100}} CC ?</h5>
+    <form action="charge" method="POST">
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="rzp_test_WlDtMQc5tuvZQ3"
+            data-buttontext = "YES"
+            data-amount={{amount}}
+            data-name="Buy CC"
+            data-description="Purchase Description"
+            data-image="vk.jpg"
+            data-netbanking="true"
+            
+            
+            data-prefill.email="{{session['email']}}"
+            
+            data-notes.shopping_order_id="21">
+        </script>
+        <input class="no-button" type="button" name="NO" value="NO">
+        <input type="hidden" name="shopping_order_id" value="21">
+    </form>
+<!-- data-description="Tron Legacy" data-prefill.name="" data-prefill.contact="9999999999" -->
+{% endblock %}
