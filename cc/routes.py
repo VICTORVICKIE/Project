@@ -10,7 +10,7 @@ import time, os
 from datetime import datetime,timedelta
 from cc import app
 
-def ist_time_now()
+def ist_time_now():
 	ist = datetime.utcnow() + timedelta(minutes=330)
 	istfm = ist.strftime("at %H:%M on %d-%m-%Y")
 	return istfm
