@@ -8,3 +8,5 @@ def otp_gen():
 		OTP += digits[math.floor(random.random() * 10)]
 
 	return OTP
+
+print("hello")
