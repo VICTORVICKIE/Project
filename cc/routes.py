@@ -256,7 +256,7 @@ def activities():
 		roll = session["roll"]
 		ct = ist_time_now()
 		blockchain = blockchain[::-1]
-		balance = get_balance(session.get('roll'))
+		balance = int(get_balance(session.get('roll')))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
 			page='activities',ct=ct)
@@ -267,7 +267,7 @@ def activities():
 @is_logged_in
 def transaction():
 	form = SendCCForm(request.form)
-	balance = get_balance(session.get('roll'))
+	balance = int(get_balance(session.get('roll')))
 	if request.method == 'POST':
 		
 		roll = session['roll']
@@ -342,7 +342,7 @@ def verifytrans():
 @is_logged_in
 def buy():
 	form = BuyCCForm(request.form)
-	balance = get_balance(session.get('roll'))
+	balance = int(get_balance(session.get('roll')))
 
 	if request.method == 'POST':
 		try:
@@ -365,7 +365,7 @@ def buy():
 def razor_payment():
 	amount = session["pay-amount"]
 	email = session["email"]
-	balance = get_balance(session.get('roll'))
+	balance = int(get_balance(session.get('roll')))
 	return render_template('razorpay-int.html',amount=amount,session=session,balance=balance)
 
 @app.route('/charge', methods=['POST'])
@@ -402,7 +402,7 @@ def log_in_user(roll):
 @is_logged_in
 def profile():
 	if "roll" in session:
-		balance = get_balance(session.get('roll'))
+		balance = int(get_balance(session.get('roll')))
 		return render_template('profile.html',page='profile',session=session,balance=balance)
 
 ########################################    CHANGE PASS BLOCK  ########################################

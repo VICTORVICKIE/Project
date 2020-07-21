@@ -23,15 +23,11 @@ def send(email,message,purpose):
 
 	if purpose == 'EmailVerify':
 		msg['Subject'] = 'Verification Link'
-		msg.set_content(f'Click on this link to verify your Email, {message}')
-
-	if purpose == 'ResetPass':
-		msg['Subject'] = 'Password Reset Link'
 		msg.set_content(f"""\
 			<!DOCTYPE html>
 			<html>
 			<body>
-			<h3>Click below to Verify your account</h3>
+			<h3>Click below to Verify Your Account</h3>
 			
 <div style="width: 100%;
   text-align: center;">
@@ -50,6 +46,36 @@ def send(email,message,purpose):
     border-radius: 2px;font-family: Helvetica, Arial, sans-serif;
     font-size: 14px; color: #0000FF;text-decoration: none;
     font-weight:bold;display: inline-block;" href="{message}" class="button" target="_blank" >Verify</a>
+</div>
+
+						</body>
+						</html>""",subtype='html')
+
+	if purpose == 'ResetPass':
+		msg['Subject'] = 'Password Reset Link'
+		msg.set_content(f"""\
+			<!DOCTYPE html>
+			<html>
+			<body>
+			<h3>Click below to Reset Password</h3>
+			
+<div style="width: 100%;
+  text-align: center;">
+  <a style="padding:1em;
+    text-align: center;
+    display:inline-block;
+    text-decoration: none !important;
+    margin:0 auto;
+
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    padding: 8px 12px; border: 1px solid #ED2939;
+    border-radius: 2px;font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px; color: #0000FF;text-decoration: none;
+    font-weight:bold;display: inline-block;" href="{message}" class="button" target="_blank" >Reset</a>
 </div>
 
 						</body>
