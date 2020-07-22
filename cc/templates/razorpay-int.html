@@ -44,7 +44,7 @@
             data-amount={{amount}}
             data-name="Buy CC"
             data-description="Purchase Description"
-            data-image="vk.jpg"
+            data-image="{{url_for('static',filename='image/coin.png')}}"
             data-netbanking="true"
 
 
@@ -52,7 +52,7 @@
 
             data-notes.shopping_order_id="21">
         </script>
-        <input class="no-button" type="button" name="NO" value="NO">
+        <input class="no-button" type="button" name="NO" value="NO" onclick="window.location='/buy';">
         <input type="hidden" name="shopping_order_id" value="21">
     </form>
 <!-- data-description="Tron Legacy" data-prefill.name="" data-prefill.contact="9999999999" -->
