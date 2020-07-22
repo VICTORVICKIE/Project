@@ -11,6 +11,15 @@ from datetime import datetime,timedelta
 from cc import app
 import razorpay
 import json
+import re
+
+def prevent_sql_injection(txt):
+	bad_characters = re.findall("[\"'*;\\()-]",txt)
+
+	if not bad_characters:
+		return True
+	else:
+		return False
 
 razorpay_client = razorpay.Client(auth=("rzp_test_WlDtMQc5tuvZQ3", "sbefqLfUE0VpM0TJWOTGxKoT"))
 
@@ -186,50 +195,56 @@ def login():
 		if request.method == 'POST':
 			roll = request.form['roll']
 			candidate = request.form['password']
+			if prevent_sql_injection(roll) and prevent_sql_injection(candidate):	
+				
 
-			users = Table("users","name","email","roll","password")
-			user = users.getone("roll",roll)
-			accpass = user.get('password')
+				users = Table("users","name","email","roll","password")
+				user = users.getone("roll",roll)
+				accpass = user.get('password')
 
-			if accpass is None:
-				flash("Invalid User",'danger')
-				return redirect(url_for('login'))
-
-			else:
-				if sha256_crypt.verify(candidate,accpass):
-						
-					log_in_user(roll)
-					flash("You are logged in",'success')
-					return redirect(url_for("dashboard"))
-				else:
-					flash("Invalid Password",'danger')
+				if accpass is None:
+					flash("Invalid User",'danger')
 					return redirect(url_for('login'))
 
+				else:
+					if sha256_crypt.verify(candidate,accpass):
+							
+						log_in_user(roll)
+						flash("You are logged in",'success')
+						return redirect(url_for("dashboard"))
+					else:
+						flash("Invalid Password",'danger')
+						return redirect(url_for('login'))
+			else:
+				flash("Unsupported Characters",'danger')
+				return redirect(url_for('login'))
 		return render_template('login.html')
 
 	elif int(width)<992:
 		if request.method == 'POST':
 			roll = request.form['roll']
 			candidate = request.form['password']
+			if prevent_sql_injection(roll) and prevent_sql_injection(candidate):	
+				users = Table("users","name","email","roll","password")
+				user = users.getone("roll",roll)
+				accpass = user.get('password')
 
-			users = Table("users","name","email","roll","password")
-			user = users.getone("roll",roll)
-			accpass = user.get('password')
-
-			if accpass is None:
-				flash("Invalid User",'danger')
-				return redirect(url_for('login'))
-
-			else:
-				if sha256_crypt.verify(candidate,accpass):
-						
-					log_in_user(roll)
-					flash("You are logged in",'success')
-					return redirect(url_for("dashboard"))
-				else:
-					flash("Invalid Password",'danger')
+				if accpass is None:
+					flash("Invalid User",'danger')
 					return redirect(url_for('login'))
 
+				else:
+					if sha256_crypt.verify(candidate,accpass):
+							
+						log_in_user(roll)
+						flash("You are logged in",'success')
+						return redirect(url_for("dashboard"))
+					else:
+						flash("Invalid Password",'danger')
+						return redirect(url_for('login'))
+			else:
+				flash("Unsupported Characters",'danger')
+				return redirect(url_for('login'))
 		return render_template('login-mb.html')
 ########################################     USER BLOCK  ##########################################
 
@@ -268,7 +283,7 @@ def activities():
 def transaction():
 	form = SendCCForm(request.form)
 	balance = int(get_balance(session.get('roll')))
-	if request.method == 'POST':
+	if request.method == 'POST' and form.validate():
 		
 		roll = session['roll']
 		candidate = request.form['password']
@@ -344,7 +359,7 @@ def buy():
 	form = BuyCCForm(request.form)
 	balance = int(get_balance(session.get('roll')))
 
-	if request.method == 'POST':
+	if request.method == 'POST' and form.validate():
 		try:
 			if int(form.amount.data)>0:
 				session["pay-amount"] = int(form.amount.data) * 100
@@ -414,20 +429,23 @@ def passchange():
 		oldpass = request.form['password']
 		newpass = request.form["newpassword"]
 		confirmnew = request.form["newconfirm"]
-		roll = session["roll"]
-		users = Table("users","name","email","roll","password")
-		user = users.getone("roll",roll)
-		accpass = user.get('password')
-		if sha256_crypt.verify(oldpass,accpass):
-			if newpass == confirmnew:
-				OTP = otp_gen()
-				email = session['email']
-				send(email,OTP,purpose='ChangePass')
-				session['otp'] = OTP
-				session["newpass"] = sha256_crypt.hash(newpass)
-				
-				return redirect(url_for('verifypc'))
-
+		if prevent_sql_injection(oldpass) and prevent_sql_injection(newpass) and prevent_sql_injection(confirmnew):
+			roll = session["roll"]
+			users = Table("users","name","email","roll","password")
+			user = users.getone("roll",roll)
+			accpass = user.get('password')
+			if sha256_crypt.verify(oldpass,accpass):
+				if newpass == confirmnew:
+					OTP = otp_gen()
+					email = session['email']
+					send(email,OTP,purpose='ChangePass')
+					session['otp'] = OTP
+					session["newpass"] = sha256_crypt.hash(newpass)
+					
+					return redirect(url_for('verifypc'))
+		else:
+			flash("Unsupported Character",'danger')
+			return redirect(url_for("passchange"))
 	if "roll" in session:
 		return render_template('passchange.html',session=session,width=int(session["width"]))
 
@@ -467,24 +485,30 @@ def forgotpass():
 	elif int(width)>992:	
 		if request.method == 'POST':
 			roll = request.form["roll"]
-			if not isnewuser(roll):
-				users = Table("users","name","email","roll","password")
-				user = users.getone("roll",roll)
-				email = user.get('email')
-				confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
-				return render_template('resetlinkmail.html')
-				
+			if prevent_sql_injection(roll):	
+				if not isnewuser(roll):
+					users = Table("users","name","email","roll","password")
+					user = users.getone("roll",roll)
+					email = user.get('email')
+					confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
+					return render_template('resetlinkmail.html')
+			else:
+				flash("Unsupported Character","danger")
+				return redirect(url_for("forgotpass"))		
 		return render_template('forgotpassreq.html')
 	elif int(width)<992:
 		if request.method == 'POST':
 			roll = request.form["roll"]
-			if not isnewuser(roll):
-				users = Table("users","name","email","roll","password")
-				user = users.getone("roll",roll)
-				email = user.get('email')
-				confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
-				return render_template('resetlinkmail.html')
-				
+			if prevent_sql_injection(roll):
+				if not isnewuser(roll):
+					users = Table("users","name","email","roll","password")
+					user = users.getone("roll",roll)
+					email = user.get('email')
+					confirm_link_sender(email,roll,func_to='check',salt='password-reset',purpose='ResetPass')
+					return render_template('resetlinkmail.html')
+			else:
+				flash("Unsupported Character","danger")
+				return redirect(url_for("forgotpass"))
 		return render_template('forgotpassreq-mb.html')
 		
 ########################################    FORGOT PASS VERIFY BLOCK  ########################################
@@ -494,19 +518,23 @@ def check(token):
 	try:
 		roll = s.loads(token, salt='password-reset', max_age=300)
 		if request.method == 'POST':
-			if request.form["password"] == request.form["confirmreset"]:
-				newpass = request.form["password"]
-				password = sha256_crypt.hash(newpass)
-				users = Table("users","name","email","roll","password")
-				user = users.getone("roll",roll)
-				name = user.get('name')
-				email = user.get('email')
-				roll = roll				
+			password = request.form["password"]
+			confirmrest = request.form["confirmreset"]
+			if prevent_sql_injection(password) and prevent_sql_injection(confirmrest):
+				if request.form["password"] == request.form["confirmreset"]:
+					newpass = request.form["password"]
+					password = sha256_crypt.hash(newpass)
+					users = Table("users","name","email","roll","password")
+					user = users.getone("roll",roll)
+					name = user.get('name')
+					email = user.get('email')
+					roll = roll				
 
-				users.replace(name,email,roll,password)
-				flash("Password Changed","success")
-				return redirect(url_for('login'))
-
+					users.replace(name,email,roll,password)
+					flash("Password Changed","success")
+					return redirect(url_for('login'))
+			else:
+				flash("Unsupported Characters",'danger')
 		return render_template("resetpass.html")
 
 
