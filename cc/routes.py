@@ -244,7 +244,7 @@ def dashboard():
 		return redirect(url_for('index'))
 	return render_template('dashboard.html',
 		session=session,ct=ct,blockchain=blockchain,
-		page='dashboard')
+		page='dashboard',width=int(session["width"]))
 
 ########################################    TRANSACTION HISTORY BLOCK  ###################################
 
@@ -259,7 +259,7 @@ def activities():
 		balance = int(get_balance(session.get('roll')))
 		return render_template('activities.html',balance=balance,
 			session=session,roll=roll,blockchain=blockchain,
-			page='activities',ct=ct)
+			page='activities',ct=ct,width=int(session["width"]))
 
 ########################################     TRANSACTION BLOCK  ##########################################
 
@@ -302,8 +302,8 @@ def transaction():
 			return redirect(url_for('transaction'))
 		else:
 			flash("Insuffient Balance",'danger')
-	return render_template("transaction.html",balance=balance,form=form,
-														page='transaction')
+	return render_template("transaction.html",session=session,balance=balance,form=form,
+														page='transaction',width=int(session["width"]))
 
 ########################################     OTP BLOCK  ##########################################
 
@@ -334,7 +334,7 @@ def verifytrans():
 			flash("Money Sent","success")
 			return redirect(url_for('transaction'))
 
-	return render_template("verify.html")
+	return render_template("verify.html",session=session,width=int(session["width"]))
 
 ########################################    PURCHASE BLOCK  ##########################################
 
@@ -356,7 +356,7 @@ def buy():
 			flash(str(e),'danger')
 
 		return redirect(url_for('buy'))
-	return render_template("buy.html",balance=balance,form=form, page='buy')
+	return render_template("buy.html",session=session,balance=balance,form=form, page='buy',width=int(session["width"]))
 
 ##################################   PAYMENT GATEWAY BLOCK  ##########################################
 
@@ -366,7 +366,7 @@ def razor_payment():
 	amount = session["pay-amount"]
 	email = session["email"]
 	balance = int(get_balance(session.get('roll')))
-	return render_template('razorpay-int.html',amount=amount,session=session,balance=balance)
+	return render_template('razorpay-int.html',amount=amount,session=session,balance=balance,width=int(session["width"]))
 
 @app.route('/charge', methods=['POST'])
 @is_logged_in
@@ -403,7 +403,7 @@ def log_in_user(roll):
 def profile():
 	if "roll" in session:
 		balance = int(get_balance(session.get('roll')))
-		return render_template('profile.html',page='profile',session=session,balance=balance)
+		return render_template('profile.html',page='profile',session=session,balance=balance,width=int(session["width"]))
 
 ########################################    CHANGE PASS BLOCK  ########################################
 
@@ -429,7 +429,7 @@ def passchange():
 				return redirect(url_for('verifypc'))
 
 	if "roll" in session:
-		return render_template('passchange.html',session=session)
+		return render_template('passchange.html',session=session,width=int(session["width"]))
 
 ########################################   VERIFY CHANGE PASS BLOCK  ########################################
 
@@ -454,7 +454,7 @@ def verifypc():
 			flash("Password Changed","success")
 			return redirect(url_for('profile'))
 
-	return render_template("verify.html")
+	return render_template("verify.html",session=session,width=int(session["width"]))
 
 ########################################   FORGOT PASS BLOCK  ########################################
 
