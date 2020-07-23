@@ -1,59 +1,46 @@
 <!DOCTYPE html>
 <html>
-<title>RECurrency</title>
+<head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-purple.css">
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/style-mb.css')}}">
+</head>
+<body>
 
-<header class="w3-bar w3-card w3-theme" style = "height:60px; width: device-width;" >
-  <button class="w3-bar-item w3-button w3-xxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
-  <h3 style="text-align: center;" class="w3-bar-item" >RECurrency</h3>
-</header>
-
-<body style="width:100% height:100% ;background-size: 100% 120%">
-
-<nav class="w3-sidebar w3-theme w3-bar-block w3-card" id="mySidebar" >
-<div class="w3-container w3-theme-d2">
-  <span onclick="closeSidebar()" class="w3-button w3-display-topright w3-large">X</span>
-  <br>
-
-</div>
-<br>
-<a class="w3-bar-item w3-button" href="/login">Login</a>
-<a class="w3-bar-item w3-button" href="/register">Register</a>
-<a class="w3-bar-item w3-button" href="#">About</a>
-</nav>
-
-<div class="w3-container" >
-<hr>
-<div class="w3-cell-row">
-  <div class="w3-cell w3-container">
-    <br>
-    <br>
-    <h3 style="text-align: center;" >Welcome,</h3>
-    <p style="text-align: center;font-size: 20px;">We simplified the Blockchain Technology of sending money by our user-friendly interface and efficient servers.</p>
-    <br>
-    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: purple; color:white;"  onclick="window.location.href='/login';">Login</button></p>
-    <br>
-    <p  style="text-align: center;"><button style="border-radius: 10px;background-color: purple; color:white; " onclick="window.location.href='/register';">Get Started</button></p>
-  </div>
-</div>
-<hr>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="/login">Login</a>
+  <a href="/register">Register</a>
 </div>
 
-<footer class="w3-container w3-bottom w3-theme">
-  <h6 align="center" >Future Project 2020 - RECurrency</h6>
-</footer>
-
+<div id="main">
+    <span style="font-size:30px;cursor:pointer; padding-left:10px;" onclick="openNav()">&#9776; RECurrency</span>
+    <div class="row">
+      <div class="flip" style="padding-left:35%">
+          <img src="{{url_for('static',filename='image/coin.png')}}" alt="" style="width:50%;height:50%;">
+      </div>
+      <br>
+      <br>
+      <br>
+      <h2 style="text-align: center;">Welcome</h2>
+      <p style="text-align: center;">You are few seconds away from earning your own money!</p>
+      <br>
+      <p style="text-align: center;"><button onclick="window.location.href='/login';">Login</button></p>
+      <br>
+      <p style="text-align: center;"><button onclick="window.location.href='/register';">Register</button></p>
+    </div>
+</div>
 <script>
-closeSidebar();
-function openSidebar() {
-  document.getElementById("mySidebar").style.display = "block";
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
-function closeSidebar() {
-  document.getElementById("mySidebar").style.display = "none";
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  document.body.style.backgroundColor = "white";
 }
 </script>
-
 </body>
+</html>
