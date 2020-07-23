@@ -1,0 +1,121 @@
+body {font-family: Arial, Helvetica, sans-serif; padding-left: 3px;}
+form {border: 3px solid rgba(0,0,0,0);}
+
+.container {
+  padding: 3%;
+  background: #353535;
+  text-align: center;
+  color:white;
+}
+
+button {
+  background-color: #007bff;
+  border-radius: 100px;
+  color: white;
+  padding: 10px 18px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: auto;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+#main {
+  transition: margin-left .5s;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.flip input{
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    width: 60%;
+    background: #ffffff;
+    font-weight: bold;
+    color: #3D3D3D;
+    margin-top: 30%;
+    margin-bottom: 3%;
+    cursor: pointer;
+}
+
+.flip img{
+    margin-top: 15%;
+    margin-bottom: 5%;
+    width: 25%;
+    -webkit-animation: mover 2s infinite  alternate;
+    animation: mover 1s infinite  alternate;
+}
+@-webkit-keyframes mover {
+    0% { transform: translateY(0) rotateY(0deg); }
+    100% { transform: translateY(-20px) rotateY(180deg); }
+
+}
+@keyframes mover {
+   0% { transform: translateY(0) rotateY(0deg); }
+    100% { transform: translateY(-20px) rotateY(180deg); }
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+@media screen and (max-width: 300px){
+  span.psw{
+     display: block;
+     float: none;
+  }
+  .cancelbtn{
+     width: 100%;
+  }
+}
