@@ -505,7 +505,7 @@ def app_charge():
             send_campus_coins("BANK", session.get(
                 'roll'), int(amount/100), time)
             flash("Purchase Successfull", "success")
-            razorpay_client.payment.refund(payment_id, amount)
+            #razorpay_client.payment.refund(payment_id, amount)
 
             payments.replace(payment_dict[str(keys[0])], payment_dict[str(keys[1])],
                              payment_dict[str(keys[2])

@@ -1,4 +1,3 @@
-from cc import routes
 from flask import Flask
 import os
 import getpass
@@ -38,3 +37,4 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 app.config.update(SECRET_KEY=os.urandom(24))
 mysql = MySQL(app)
+from cc import routes
