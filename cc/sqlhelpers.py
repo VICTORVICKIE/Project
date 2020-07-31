@@ -1,6 +1,6 @@
 from cc import mysql
 from cc.routes import session
-from cc.Blockchain import Block,Blockchain,update_hash
+from cc.Blockchain import Block, Blockchain, update_hash
 
 
 class InvalidTranscationException(Exception):
@@ -12,68 +12,87 @@ class InsufficientCCException(Exception):
 
 
 class Table():
-    def __init__(self, table_name,*args,**kwargs):
+    def __init__(self, table_name, *args, **kwargs):
         self.table = table_name
-        self.columns = "(%s)" %",".join(args)
+        self.columns = "(%s)" % ",".join(args)
         self.columnsList = args
         primary_key = kwargs.get('primary_key')
         if isnewtable(table_name):
             create_data = ""
             for column in self.columnsList:
-                create_data += "%s varchar(100)," %column
+                create_data += "%s varchar(100)," % column
 
             cur = mysql.connection.cursor()
             #print("CREATE TABLE %s(%s)" %(self.table, create_data[:len(create_data)-1]))
-            cur.execute("CREATE TABLE %s(%s)" %(self.table, create_data[:len(create_data)-1]))
+            cur.execute("CREATE TABLE %s(%s)" %
+                        (self.table, create_data[:len(create_data)-1]))
             if primary_key == 'roll':
-            	cur.execute("ALTER TABLE %s ADD PRIMARY KEY (%s)"%(self.table,primary_key))
-            	mysql.connection.commit();cur.close()
+                cur.execute("ALTER TABLE %s ADD PRIMARY KEY (%s)" %
+                            (self.table, primary_key))
+                mysql.connection.commit()
+                cur.close()
+            if primary_key == 'id':
+                cur.execute("ALTER TABLE %s ADD PRIMARY KEY (%s)" %
+                            (self.table, primary_key))
+                mysql.connection.commit()
+                cur.close()
+
             else:
                 cur.close()
 
     def getall(self):
         cur = mysql.connection.cursor()
-        result = cur.execute("SELECT * FROM %s" %self.table)
-        data = cur.fetchall(); return data
+        result = cur.execute("SELECT * FROM %s" % self.table)
+        data = cur.fetchall()
+        return data
 
     def getone(self, search, value):
-        data = {}; cur = mysql.connection.cursor()
-        result = cur.execute("SELECT * FROM %s WHERE %s = \"%s\"" %(self.table, search, value))
-        if result > 0: data = cur.fetchone()
-        cur.close(); return data
+        data = {}
+        cur = mysql.connection.cursor()
+        result = cur.execute("SELECT * FROM %s WHERE %s = \"%s\"" %
+                             (self.table, search, value))
+        if result > 0:
+            data = cur.fetchone()
+        cur.close()
+        return data
 
-    def replace(self,name,email,roll,password):
-    	cur = mysql.connection.cursor()
-    	cur.execute("REPLACE INTO  %s(name,email,roll,password) VALUES(\"%s\",\"%s\",\"%s\",\"%s\")"%(self.table,name,email,roll,password))
-    	mysql.connection.commit(); cur.close()
-
-
+    def replace(self, *args):
+        data = ""
+        for arg in args:
+            data += "\"%s\"," % (arg)
+        cur = mysql.connection.cursor()
+        cur.execute("REPLACE INTO %s%s VALUES(%s)" %
+                    (self.table, self.columns, data[:len(data)-1]))
+        mysql.connection.commit()
+        cur.close()
 
     def deleteone(self, search, value):
         cur = mysql.connection.cursor()
-        cur.execute("DELETE from %s where %s = \"%s\"" %(self.table, search, value))
-        mysql.connection.commit(); cur.close()
-
+        cur.execute("DELETE from %s where %s = \"%s\"" %
+                    (self.table, search, value))
+        mysql.connection.commit()
+        cur.close()
 
     def deleteall(self):
         self.drop()
-        self.__init__(self.table,*self.columnsList)
-
+        self.__init__(self.table, *self.columnsList)
 
     def drop(self):
         cur = mysql.connection.cursor()
-        cur.execute("DROP TABLE %s" %self.table)
+        cur.execute("DROP TABLE %s" % self.table)
         cur.close()
 
     def insert(self, *args):
         data = ""
         for arg in args:
-            data += "\"%s\"," %(arg)
+            data += "\"%s\"," % (arg)
 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO %s%s VALUES(%s)" %(self.table, self.columns, data[:len(data)-1]))
+        cur.execute("INSERT INTO %s%s VALUES(%s)" %
+                    (self.table, self.columns, data[:len(data)-1]))
         mysql.connection.commit()
         cur.close()
+
 
 def sql_raw(execution):
     cur = mysql.connection.cursor()
@@ -86,12 +105,13 @@ def isnewtable(tableName):
     cur = mysql.connection.cursor()
 
     try:
-        result = cur.execute("SELECT * from %s" %tableName)
+        result = cur.execute("SELECT * from %s" % tableName)
         cur.close()
     except:
         return True
     else:
         return False
+
 
 def isnewuser(roll):
     users = Table("users", "name", "email", "roll", "password")
@@ -100,23 +120,29 @@ def isnewuser(roll):
 
     return False if roll in rolls else True
 
+
 def get_blockchain():
     blockchain = Blockchain()
-    blockchain_sql = Table("blockchain","number","hash","previous","data","nonce")
+    blockchain_sql = Table("blockchain", "number", "hash",
+                           "previous", "data", "nonce")
     for b in blockchain_sql.getall():
-        blockchain.add_block(Block(int(b.get('number')),b.get('previous'),b.get('data'),int(b.get('nonce'))))
+        blockchain.add_block(Block(int(b.get('number')), b.get(
+            'previous'), b.get('data'), int(b.get('nonce'))))
 
     return blockchain
 
+
 def sync_blockchain(blockchain):
-    blockchain_sql = Table("blockchain","number","hash","previous","data","nonce")
+    blockchain_sql = Table("blockchain", "number", "hash",
+                           "previous", "data", "nonce")
     blockchain_sql.deleteall()
 
     for block in blockchain.chain:
-        blockchain_sql.insert(str(block.number), block.hash(), block.previous_hash, block.data, block.nonce)
+        blockchain_sql.insert(str(block.number), block.hash(
+        ), block.previous_hash, block.data, block.nonce)
 
 
-def send_campus_coins(sender, recipient, amount,time):
+def send_campus_coins(sender, recipient, amount, time):
     try:
         amount = int(amount)
     except ValueError:
@@ -133,8 +159,9 @@ def send_campus_coins(sender, recipient, amount,time):
     blockchain = get_blockchain()
     number = len(blockchain.chain) + 1
     data = f"{sender}-->{recipient}-->{amount}-->{time}"
-    blockchain.mine(Block(number,data=data))
+    blockchain.mine(Block(number, data=data))
     sync_blockchain(blockchain)
+
 
 def get_balance(roll):
     balance = 0
@@ -146,23 +173,24 @@ def get_balance(roll):
 
         elif roll == data[1]:
             balance += int(data[2])
-            
+
     return balance
 
 
-#get the last copy of the blockchain
+# get the last copy of the blockchain
 def getLastBlockchain():
     blockchain = Table("blockchain")
     unsorted = list(blockchain.getall())
     sorted = []
     for block in unsorted:
         if block.get('number') is not None:
-            sorted.insert(int(block.get('number'))-1,block)
+            sorted.insert(int(block.get('number'))-1, block)
 
     return sorted
 
+
 def verifyBlockchain():
-    blockchain = getLastBlockchain()#; print(blockchain)
+    blockchain = getLastBlockchain()  # ; print(blockchain)
 
     for n in range(len(blockchain)):
         block_hash = update_hash(
@@ -184,11 +212,6 @@ def verifyBlockchain():
     return True
 
 
-
-
-
-
-
 """def test():
     blockchain = Blockchain()
     database = ["VICTOR","Y","rs.x","6pm"]
@@ -201,9 +224,3 @@ def verifyBlockchain():
     sync_blockchain(blockchain)
     #blockchain_sql = Table("blockchain","number","hash","previous","data","nonce")
     #blockchain_sql.deleteall()"""
-
-
-
-
-
-
