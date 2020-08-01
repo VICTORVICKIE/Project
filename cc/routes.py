@@ -211,7 +211,7 @@ def confirm_email(token):
     finally:
         log_in_user(roll)
 
-    return redirect(url_for('dashboard'))
+    return render_template("thanks.html")
 
 
 ########################################     LOGIN BLOCK  ##########################################

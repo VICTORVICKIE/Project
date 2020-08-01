@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<style type="text/css">
-    html,
-body {
-  
-  background-color: black;
-}
-  </style>
-</head>
-<body>
-	<div style="background-color: black;" class="jumbotron text-center">
+{% extends 'static-black-layout.html' %}
+{% block title %}
+<title>Expired!</title>
+{% endblock %}
+{% block body %}
+<div style="background-color: black;" class="jumbotron text-center">
   <h1 style="color: white;" class="display-3">LINK EXPIRED</h1>
   <p style="color: white;" class="lead"><strong>Follow Registration Process</strong> again</p>
   <hr>
@@ -20,6 +11,4 @@ body {
     Having trouble? <a href="">Contact us</a>
   </p>
 </div>
-
-</body>
-</html>
+{% endblock %}

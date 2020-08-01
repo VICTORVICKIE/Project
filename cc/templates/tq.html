@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<style type="text/css">
-    html,
-body {
-  
-  background-color: black;
-}
-  </style>
-</head>
-<body>
-	<div style="background-color: black;" class="jumbotron text-center">
+{% extends 'static-black-layout.html' %}
+{% block title %}
+<title>Confirmation!</title>
+{% endblock %}
+{% block body %}
+<div style="background-color: black;" class="jumbotron text-center">
   <h1 style="color: white;" class="display-3">Thank You!</h1>
   <p style="color: white;" class="lead"><strong>Please check your email</strong> for confirmation link to verify your Email.</p>
   <br>
@@ -22,6 +13,4 @@ body {
     <a style="outline: none;" class="btn btn-primary btn-sm" href="https://mail.google.com/" role="button">Open Mail</a>
   </p>
 </div>
-
-</body>
-</html>
+{% endblock %}
