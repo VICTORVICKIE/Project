@@ -1,0 +1,24 @@
+{% extends 'static-black-layout.html' %}
+{% block title %}
+<title>Confirmation!</title>
+{% endblock %}
+{% block body %}
+<div id="div" style="background-color: black;" class="jumbotron text-center">
+  <h1 style="color: white;" class="display-3">Thank You!</h1>
+  <p id="msg" style="color: white;" class="lead"></p>
+</div>
+<script>
+	var x = window.innerWidth;
+	if (x<992)
+	 {document.getElementById("msg").innerHTML = "Please Close the G-mail App and Login to Your Account via RECurrency App";}
+	else 
+	{document.getElementById("msg").innerHTML = "Please click here to Land on our Website"
+	var a = document.createElement("A");
+  	a.setAttribute("href", "/profile");
+  	a.style.fontSize = "30px";
+  	a.innerHTML = "Login";
+	 document.getElementById("div").appendChild(a);
+	}
+	
+</script>
+{% endblock %}
