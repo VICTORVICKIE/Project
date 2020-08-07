@@ -21,6 +21,8 @@ elif current_system == 'Windows':
     app.config['MYSQL_DB'] = 'CAMPUS_COINS'
     if getpass.getuser() == 'V1ct0R':
         app.config['MYSQL_PASSWORD'] = 'VIGNESHkumar14'
+    if getpass.getuser() == 'Victor':
+        app.config['MYSQL_PASSWORD'] = 'VIGNESHkumar14'
     if getpass.getuser() == 'Admin':
         app.config['MYSQL_PASSWORD'] = 'naveen'
     if getpass.getuser() == 'Santhosh Raajaa':
