@@ -10,10 +10,10 @@ app = Flask(__name__)
 ########################################    INITIALIZING  APP and DB   ##########################################
 if current_system == 'Linux':
 
-    app.config['MYSQL_HOST'] = 'victorvickie.mysql.pythonanywhere-services.com'
-    app.config['MYSQL_USER'] = 'victorvickie'
-    app.config['MYSQL_PASSWORD'] = 'VIGNESHkumar@14'
-    app.config['MYSQL_DB'] = 'victorvickie$CAMPUS_COINS'
+    app.config['MYSQL_HOST'] = 'MYSQL HOST ADDRESS'
+    app.config['MYSQL_USER'] = 'MYSQL USERNAME'
+    app.config['MYSQL_PASSWORD'] = 'MSQL PASSWORD'
+    app.config['MYSQL_DB'] = 'MYSQL DB NAME'
 
 elif current_system == 'Windows':
     app.config['MYSQL_HOST'] = 'localhost'
